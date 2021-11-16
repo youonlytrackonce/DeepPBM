@@ -5,6 +5,7 @@ from PIL import Image, ImageChops
 from numpy import asarray
 import os
 import copy
+import time
 
 
 
@@ -18,6 +19,7 @@ root_path = "/home/fatih/phd/CenterNet_DeepPBM/set0/cam1/"
 
 files = os.listdir(root_path+'bg')
 
+start = time.time()
 for refImg in files:
 
     imgBG = cv.imread(root_path+'bg/' + refImg)
@@ -30,7 +32,7 @@ for refImg in files:
     #cv.imwrite(root_path+'mask/absdiff_000001.jpg', diffImg)
 
     Conv_hsv_Gray = cv.cvtColor(diffImg, cv.COLOR_BGR2GRAY)
-    cv.imwrite(root_path+'diff/'+refImg, Conv_hsv_Gray)
+    #cv.imwrite(root_path+'diff/'+refImg, Conv_hsv_Gray)
 
     blurred = cv.GaussianBlur(Conv_hsv_Gray, (7,7), 3)
     #cv.imwrite(root_path+'mask/absdiffgrayblur_000001.jpg', blurred)
@@ -142,3 +144,5 @@ for refImg in files:
 
     #cv.imwrite('/home/fatih/fatih_phd/DeepPBM/Codes/Result/BMC2012/Video_002/mask/mask1.jpg', mask)
 
+total = time.time() - start
+print(total)
