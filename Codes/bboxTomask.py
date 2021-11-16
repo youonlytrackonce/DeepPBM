@@ -4,12 +4,11 @@ import cv2
 import time
 from matplotlib import pyplot as plt
 
-root_path = "/home/fatih/mnt/datasets/trackeveryseason/cam1/annotations/"
+root_path = "/mnt/disk2/dataset/trackeveryseason/cam1/annotations/"
 
 inx = 1
 
 anno_txt = "mot/cam1_2021-07-06,13_00_05.txt"
-input_frm = "yolo/cam1_2021-07-06,13_00_05/images"
 output = "binary_mask/"
 
 last_frm = False
