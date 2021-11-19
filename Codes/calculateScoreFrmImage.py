@@ -24,14 +24,14 @@ h = 1080
 w = 1920
 
 gt_img = os.listdir(root_path+"gt_binarymask/")
-gmg_img = os.listdir(root_path+"gmg/")
+#gmg_img = os.listdir(root_path+"mog/")
 
 gt_img = natsorted(gt_img)
-gmg_img = natsorted(gmg_img)
+#gmg_img = natsorted(gmg_img)
 
 for img in gt_img:
     gt_inst = cv2.imread(root_path+"gt_binarymask/"+img)
-    gmg_inst = cv2.imread(root_path+"gmg/"+img)
+    gmg_inst = cv2.imread(root_path+"deeppbm_mask/"+img)
 
     """
     cv2.imshow("GT",gt_frame)
@@ -62,3 +62,8 @@ accuracy_gmg = 0
 accuracy_mog = 0
 accuracy_mog2 = 0
 accuracy_knn = 0
+
+# tp: 99254130, tn: 3290320450, fp: 101645417, fn: 241260003, acc: 0.9081293349194102, prec: 0.4940485505425256 gmg
+# tp: 163401818, tn: 3100405802, fp: 291560065, fn: 177112315, acc: 0.8744340545696159, prec: 0.3591549624389083 mog2
+# tp: 108046339, tn: 3324923121, fp: 67042746, fn: 232467794, acc: 0.9197556209276406, prec: 0.6170935155666614 mog
+# tp: 164847644, tn: 3168073440, fp: 223892427, fn: 175666489, acc: 0.892950821973594, prec: 0.42405621724548176 knn

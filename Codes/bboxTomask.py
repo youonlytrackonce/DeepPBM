@@ -30,4 +30,4 @@ for line in lines:
     if last_frm:
         str_in = str(inx).rjust(6,'0')
         cv2.imwrite(root_path+output+ str_in + '.jpg',template)       
-            
+   
