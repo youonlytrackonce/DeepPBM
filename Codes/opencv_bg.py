@@ -31,7 +31,7 @@ time_knn = 0
 inx = 1
 while cap.isOpened():
 	# read frames
-	ret, img = cap.read();
+	ret, img = cap.read()
 	if ret:	
 		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		gray = cv2.GaussianBlur(gray, (21, 21), 0)
@@ -51,7 +51,7 @@ while cap.isOpened():
 		start1 = time.time()
 		fgmask1 = fgbg1.apply(img1)
 		time_mog += time.time() - start1
-
+		
 		start2 = time.time()
 		fgmask2 = fgbg2.apply(img2)
 		time_mog2 += time.time() - start2
