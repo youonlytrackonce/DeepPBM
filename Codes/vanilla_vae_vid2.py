@@ -53,7 +53,7 @@ beta = 0.8
 
 # Path parameters
 save_PATH = '/home/fatih/phd/DeepPBM/Codes/Result/bmc2012_result'
-PATH_vae = save_PATH + '/bmc_vid2_vanilla_352x288_rtx3090/epoch{}_batch{}_z{}_lr{}'.format(epoch_num,batch_size,latent_dim,learnR)
+PATH_vae = save_PATH + '/bmc_vid2_vanilla_352x288_gtx1650/epoch{}_batch{}_z{}_lr{}'.format(epoch_num,batch_size,latent_dim,learnR)
 if not os.path.exists(PATH_vae):
     os.makedirs(PATH_vae)
 
