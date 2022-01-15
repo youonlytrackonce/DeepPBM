@@ -24,10 +24,10 @@ torch.cuda.manual_seed_all(seed)
 np.random.seed(seed)
 random.seed(seed)
 
-# ======== 320x240 resnet vae ======================
+# ======== 352x288 resnet vae ======================
 
-img_size = 320 * 240
-
+img_size = 352 * 288
+video = 7
 
 class ResizeConv2d(nn.Module):
 
@@ -111,14 +111,14 @@ class ResNet34Dec(nn.Module):
     def forward(self, z):
         x = self.linear(z)
         x = x.view(z.size(0), 512, 1, 1)
-        x = F.interpolate(x, size=(7, 10), mode='bilinear', align_corners=False)
+        x = F.interpolate(x, size=(9, 11), mode='bilinear', align_corners=False)
         x = self.layer4(x)
         x = self.layer3(x)
         x = self.layer2(x)
         x = self.layer1(x)
-        x = F.interpolate(x, size=(120, 160), mode='bilinear', align_corners=False)
+        x = F.interpolate(x, size=(144, 176), mode='bilinear', align_corners=False)
         x = torch.sigmoid(self.conv1(x))
-        x = x.view(x.size(0), 3, 240, 320)
+        x = x.view(x.size(0), 3, 288, 352)
         return x
 
 
@@ -174,12 +174,12 @@ class CustomDataSet(Dataset):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(' Processor is %s' % (device))
 
-save_PATH = './Result/bmc2012_result/bmc_vid7_resnet34_320x240_rtx3090'
+save_PATH = './Result/results/bmc_vid{}_resnet34_352x288_gtx1080'.format(video)
 if not os.path.exists(save_PATH):
     os.makedirs(save_PATH)
 
 epoch_num = 140
-batch_size = 8
+batch_size = 4
 latent_dim = 1
 learnR = 1e-2
 
@@ -204,8 +204,8 @@ transform2 = transforms.Compose([
 ])
 
 
-myDatasetTrain = CustomDataSet('../Data/bmc2012/Video_007/Video_007', transform=transform)
-myDatasetTest = CustomDataSet('../Data/bmc2012/Video_007/Video_007', transform=transform)
+myDatasetTrain = CustomDataSet('../Data/bmc_real_352x288/Video_00{}/train_img'.format(video), transform=transform)
+myDatasetTest = CustomDataSet('../Data/bmc_real_352x288/Video_00{}/train_img'.format(video), transform=transform)
 
 # Data loader (input pipeline)
 train_iter = DataLoader(myDatasetTrain, batch_size=batch_size, num_workers=8, shuffle=True, drop_last=True)

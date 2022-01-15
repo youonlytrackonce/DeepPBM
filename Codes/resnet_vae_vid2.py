@@ -27,7 +27,7 @@ random.seed(seed)
 # ======== 352x288 resnet vae ======================
 
 img_size = 352 * 288
-
+video = 2
 
 class ResizeConv2d(nn.Module):
 
@@ -174,12 +174,12 @@ class CustomDataSet(Dataset):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(' Processor is %s' % (device))
 
-save_PATH = './Result/bmc2012_result/bmc_vid2_resnet34_352x288_rtx3090'
+save_PATH = './Result/results/bmc_vid{}_resnet34_352x288_gtx1080'.format(video)
 if not os.path.exists(save_PATH):
     os.makedirs(save_PATH)
 
 epoch_num = 140
-batch_size = 8
+batch_size = 4
 latent_dim = 1
 learnR = 1e-2
 
@@ -204,8 +204,8 @@ transform2 = transforms.Compose([
 ])
 
 
-myDatasetTrain = CustomDataSet('../Data/bmc2012/Video_002/Video_002', transform=transform)
-myDatasetTest = CustomDataSet('../Data/bmc2012/Video_002/Video_002', transform=transform)
+myDatasetTrain = CustomDataSet('../Data/bmc_real_352x288/Video_00{}/train_img'.format(video), transform=transform)
+myDatasetTest = CustomDataSet('../Data/bmc_real_352x288/Video_00{}/train_img'.format(video), transform=transform)
 
 # Data loader (input pipeline)
 train_iter = DataLoader(myDatasetTrain, batch_size=batch_size, num_workers=8, shuffle=True, drop_last=True)

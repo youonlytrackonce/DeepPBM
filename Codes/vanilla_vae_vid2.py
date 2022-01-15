@@ -14,11 +14,13 @@ import os
 import time
 from skimage import io
 
+video = 2
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(' Processor is %s' % (device))
 # import the video frames for the training part consisting 30000 frames
 nSample = 1498  # number of samples to be loaded for the training
-loadPath = '/home/fatih/phd/DeepPBM/Data/bmc2012/Video_002/Video_002/'
+loadPath = '/home/fatih/phd/DeepPBM/Data/bmc_real_352x288/Video_00{}/train_img/'.format(video)
 frst = io.imread(loadPath + '1.jpg')
 height, width, nCh = frst.shape
 imgs = np.empty([nSample, nCh, height, width])
@@ -38,7 +40,7 @@ h_layer_3 = 128
 h_layer_4 = 256  # 128
 h_layer_5 = 128  # 128
 h_layer_6 = 600  # 2400
-latent_dim = 2
+latent_dim = 1
 kernel_size = (3, 3)
 pool_size = 2
 stride = 2
@@ -47,13 +49,13 @@ norm_par = 10 * 8  # 67x37
 
 # VAE training parameters
 batch_size = 4
-epoch_num = 20
+epoch_num = 200
 learnR = 1e-3
 beta = 0.8
 
 # Path parameters
-save_PATH = '/home/fatih/phd/DeepPBM/Codes/Result/bmc2012_result'
-PATH_vae = save_PATH + '/bmc_vid2_vanilla_352x288_gtx1650/epoch{}_batch{}_z{}_lr{}'.format(epoch_num,batch_size,latent_dim,learnR)
+save_PATH = '/home/fatih/phd/DeepPBM/Codes/Result/results'
+PATH_vae = save_PATH + '/bmc_vid{}_vanilla_352x288_gtx1080/epoch{}_batch{}_z{}_lr{}'.format(video, epoch_num, batch_size, latent_dim, learnR)
 if not os.path.exists(PATH_vae):
     os.makedirs(PATH_vae)
 

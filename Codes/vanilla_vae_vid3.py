@@ -14,11 +14,13 @@ import os
 import time
 from skimage import io
 
+video = 3
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(' Processor is %s' % (device))
 # import the video frames for the training part consisting 30000 frames
 nSample = 794  # number of samples to be loaded for the training
-loadPath = '/home/fatih/phd/DeepPBM/Data/bmc2012/Video_003/Video_003/'
+loadPath = '/home/fatih/phd/DeepPBM/Data/bmc_real_352x288/Video_00{}/train_img/'.format(video)
 frst = io.imread(loadPath + '1.jpg')
 height, width, nCh = frst.shape
 imgs = np.empty([nSample, nCh, height, width])
@@ -37,23 +39,23 @@ h_layer_2 = 64
 h_layer_3 = 128
 h_layer_4 = 256  # 128
 h_layer_5 = 128  # 128
-h_layer_6 = 1200  # 2400
-latent_dim = 2
+h_layer_6 = 600  # 2400
+latent_dim = 1
 kernel_size = (3, 3)
 pool_size = 2
 stride = 2
 
-norm_par = 9 * 6  # 67x37
+norm_par = 10 * 8  # 67x37
 
 # VAE training parameters
 batch_size = 4
-epoch_num = 20
+epoch_num = 200
 learnR = 1e-3
 beta = 0.8
 
 # Path parameters
-save_PATH = '/home/fatih/phd/DeepPBM/Codes/Result/bmc2012_result'
-PATH_vae = save_PATH + '/bmc_vid3_vanilla_320x240_rtx3090/epoch{}_batch{}_z{}_lr{}'.format(epoch_num,batch_size,latent_dim,learnR)
+save_PATH = '/home/fatih/phd/DeepPBM/Codes/Result/results'
+PATH_vae = save_PATH + '/bmc_vid{}_vanilla_352x288_gtx1080/epoch{}_batch{}_z{}_lr{}'.format(video, epoch_num, batch_size, latent_dim, learnR)
 if not os.path.exists(PATH_vae):
     os.makedirs(PATH_vae)
 
@@ -115,7 +117,6 @@ class VAE(nn.Module):
         eh3 = self.relu(self.ebn3(self.econv3(eh2)))
         eh4 = self.relu(self.ebn4(self.econv4(eh3)))
         eh5 = self.relu(self.ebn5(self.econv5(eh4)))
-        print(eh5.size())
         eh6 = self.relu(self.edrop1(self.efc1(eh5.view(-1, h_layer_5 * norm_par))))
         mu_z = self.mu_z(eh6)
         logvar_z = self.logvar_z(eh6)
@@ -130,11 +131,10 @@ class VAE(nn.Module):
     def Decoder(self, z):
         dh1 = self.relu(self.dfc1(z))
         dh2 = self.relu(self.ddrop1(self.dfc2(dh1)))
-        dh3 = self.relu(self.dbn1(self.dconv1(dh2.view(-1, h_layer_5, 6, 9))))
+        dh3 = self.relu(self.dbn1(self.dconv1(dh2.view(-1, h_layer_5, 8, 10))))
         dh4 = self.relu(self.dbn2(self.dconv2(dh3)))
         dh5 = self.relu(self.dbn3(self.dconv3(dh4)))
         dh6 = self.relu(self.dbn4(self.dconv4(dh5)))
-        print(dh6.size())
         x = self.dconv5(dh6).view(-1, 3, img_size)
         return self.sigmoid(x)
 
