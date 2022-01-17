@@ -6,48 +6,69 @@ from numpy import asarray
 import os
 import copy
 import time
+from natsort import natsorted
 
 
 
-"""
-imgBG = cv.imread('/home/fatih/fatih_phd/DeepPBM/Codes/Result/BMC2012/Video_002/bg/imageRec000001_l30.jpg')
-imgFG = cv.imread('/home/fatih/fatih_phd/DeepPBM/Codes/Result/BMC2012/Video_002/videoFrames/out1.png')
-mask = cv.subtract(imgBG,imgFG)
-"""
 
-root_path = "/home/fatih/phd/CenterNet_DeepPBM/set0/cam1/"
 
-files = os.listdir(root_path+'bg')
+root_path = '/home/ubuntu/phd/DeepPBM/experiment_bmc/Video_002/'
+
+eval_img = os.listdir(root_path + 'eval_img')
+eval_img = natsorted(eval_img)
+
+resnet_bg = os.listdir(root_path + 'resnet')
+resnet_bg = natsorted(resnet_bg)
+
+vanilla_bg = os.listdir(root_path + 'vanilla')
+vanilla_bg = natsorted(vanilla_bg)
+
+
+resnet_mask = root_path + 'resnet_mask/'
+vanilla_mask = root_path + 'vanilla_mask/'
+
 
 start = time.time()
-for refImg in files:
+for x in range(len(eval_img)):
+    imgBG_resnet = cv.imread(root_path + 'resnet/' + resnet_bg[x])
+    imgBG_resnet = cv.cvtColor(imgBG_resnet, cv.COLOR_BGR2GRAY)
+    imgBG_resnet = cv.GaussianBlur(imgBG_resnet, (7, 7), 3)
 
-    imgBG = cv.imread(root_path+'bg/' + refImg)
-    imgFG = cv.imread(root_path+'fg/' + refImg)
+    imgBG_vanilla = cv.imread(root_path + 'vanilla/' + vanilla_bg[x])
+    imgBG_vanilla = cv.cvtColor(imgBG_vanilla, cv.COLOR_BGR2GRAY)
+    imgBG_vanilla = cv.GaussianBlur(imgBG_vanilla, (7, 7), 3)
 
-    imgFG = cv.GaussianBlur(imgFG, (7,7), 3)
+    imgFG = cv.imread(root_path + 'eval_img/' + eval_img[x])
+    imgFG = cv.cvtColor(imgFG, cv.COLOR_BGR2GRAY)
+    imgFG = cv.GaussianBlur(imgFG, (7, 7), 3)
+
+    # imgFG = cv.GaussianBlur(imgFG, (7,7), 3)
 
     # mask = cv.subtract(imgBG,imgFG)
-    diffImg = cv.absdiff(imgBG,imgFG)
-    #cv.imwrite(root_path+'mask/absdiff_000001.jpg', diffImg)
+    diffImg_resnet = cv.absdiff(imgBG_resnet, imgFG)
+    #diffImg_resnet = cv.GaussianBlur(diffImg_resnet, (7, 7), 3)
 
-    Conv_hsv_Gray = cv.cvtColor(diffImg, cv.COLOR_BGR2GRAY)
-    #cv.imwrite(root_path+'diff/'+refImg, Conv_hsv_Gray)
+    diffImg_vanilla = cv.absdiff(imgBG_vanilla, imgFG)
+    #diffImg_vanilla = cv.GaussianBlur(diffImg_vanilla, (7, 7), 3)
 
-    blurred = cv.GaussianBlur(Conv_hsv_Gray, (7,7), 3)
-    #cv.imwrite(root_path+'mask/absdiffgrayblur_000001.jpg', blurred)
+    _ , diffImg_resnet = cv.threshold(diffImg_resnet, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    _, diffImg_vanilla = cv.threshold(diffImg_vanilla, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
-    #thresh = cv.adaptiveThreshold(blurred, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 10)
-    #cv.imwrite(root_path+'mask/adaptive_000001.jpg', thresh)
+    cv.imwrite(resnet_mask + resnet_bg[x], diffImg_resnet)
+    cv.imwrite(vanilla_mask + vanilla_bg[x], diffImg_vanilla)
 
-    #mask1 = copy.deepcopy(blurred)
-    mask2 = copy.deepcopy(blurred)
+    #Conv_hsv_Gray = cv.cvtColor(diffImg, cv.COLOR_BGR2GRAY)
+
+
+    #blurred = cv.GaussianBlur(Conv_hsv_Gray, (7,7), 3)
+
+    #mask2 = copy.deepcopy(blurred)
     """
     (gT, threshotsu) = cv.threshold(mask1,0,255,cv.THRESH_OTSU)
     cv.imwrite(root_path+'mask/threshotsu_000001.jpg', threshotsu)
     gaussBlurOtsu = cv.GaussianBlur(threshotsu, (7, 7), 0)
     cv.imwrite(root_path+'mask/gaussblurOtsu_000001.jpg', gaussBlurOtsu)
-    """
+    
 
     (gT, threshtri) = cv.threshold(mask2,0,255,cv.THRESH_TRIANGLE)
     #cv.imwrite(root_path+'mask/threshtri_000001.jpg', threshtri)
@@ -58,7 +79,7 @@ for refImg in files:
 
     res = cv.bitwise_and(imgFG,imgFG,mask = gaussBlurTri)
     #cv.imwrite(root_path+'masked/' + refImg, res)
-    """
+    
     mask2 = copy.deepcopy(Conv_hsv_Gray)
     mask3 = copy.deepcopy(Conv_hsv_Gray)
 
