@@ -178,7 +178,7 @@ save_PATH = './Result/results/bmc_vid{}_resnet34_352x288_gtx1080'.format(video)
 if not os.path.exists(save_PATH):
     os.makedirs(save_PATH)
 
-epoch_num = 140
+epoch_num = 200
 batch_size = 4
 latent_dim = 1
 learnR = 1e-2
@@ -209,7 +209,7 @@ myDatasetTest = CustomDataSet('../Data/bmc_real_352x288/Video_00{}/train_img'.fo
 
 # Data loader (input pipeline)
 train_iter = DataLoader(myDatasetTrain, batch_size=batch_size, num_workers=8, shuffle=True, drop_last=True)
-test_iter = DataLoader(myDatasetTest, batch_size=batch_size, num_workers=8, shuffle=False, drop_last=False)
+test_iter = DataLoader(myDatasetTest, batch_size=batch_size, num_workers=8, shuffle=False, drop_last=True)
 
 min_loss = 0
 print('Training starts')
