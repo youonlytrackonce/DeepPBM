@@ -8,11 +8,9 @@ import copy
 import time
 from natsort import natsorted
 
+video = 8
 
-
-
-
-root_path = '/home/ubuntu/phd/DeepPBM/experiment_bmc/Video_002/'
+root_path = '/home/ubuntu/phd/DeepPBM/experiment_bmc/Video_00{}/'.format(video)
 
 eval_img = os.listdir(root_path + 'eval_img')
 eval_img = natsorted(eval_img)
@@ -23,10 +21,8 @@ resnet_bg = natsorted(resnet_bg)
 vanilla_bg = os.listdir(root_path + 'vanilla')
 vanilla_bg = natsorted(vanilla_bg)
 
-
 resnet_mask = root_path + 'resnet_mask/'
 vanilla_mask = root_path + 'vanilla_mask/'
-
 
 start = time.time()
 for x in range(len(eval_img)):
@@ -46,23 +42,22 @@ for x in range(len(eval_img)):
 
     # mask = cv.subtract(imgBG,imgFG)
     diffImg_resnet = cv.absdiff(imgBG_resnet, imgFG)
-    #diffImg_resnet = cv.GaussianBlur(diffImg_resnet, (7, 7), 3)
+    # diffImg_resnet = cv.GaussianBlur(diffImg_resnet, (7, 7), 3)
 
     diffImg_vanilla = cv.absdiff(imgBG_vanilla, imgFG)
-    #diffImg_vanilla = cv.GaussianBlur(diffImg_vanilla, (7, 7), 3)
+    # diffImg_vanilla = cv.GaussianBlur(diffImg_vanilla, (7, 7), 3)
 
-    _ , diffImg_resnet = cv.threshold(diffImg_resnet, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    _, diffImg_resnet = cv.threshold(diffImg_resnet, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
     _, diffImg_vanilla = cv.threshold(diffImg_vanilla, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 
     cv.imwrite(resnet_mask + resnet_bg[x], diffImg_resnet)
     cv.imwrite(vanilla_mask + vanilla_bg[x], diffImg_vanilla)
 
-    #Conv_hsv_Gray = cv.cvtColor(diffImg, cv.COLOR_BGR2GRAY)
+    # Conv_hsv_Gray = cv.cvtColor(diffImg, cv.COLOR_BGR2GRAY)
 
+    # blurred = cv.GaussianBlur(Conv_hsv_Gray, (7,7), 3)
 
-    #blurred = cv.GaussianBlur(Conv_hsv_Gray, (7,7), 3)
-
-    #mask2 = copy.deepcopy(blurred)
+    # mask2 = copy.deepcopy(blurred)
     """
     (gT, threshotsu) = cv.threshold(mask1,0,255,cv.THRESH_OTSU)
     cv.imwrite(root_path+'mask/threshotsu_000001.jpg', threshotsu)
@@ -104,8 +99,6 @@ for x in range(len(eval_img)):
     cv.imwrite(root_path+'mask/averageblurotsu_000001.jpg', averageblurotsu)
     """
 
-
-
     """
     cv.imwrite(root_path+'mask/otsu_000000.jpg', abs_mask)
     cv.imwrite(root_path+'mask/blur_000000.jpg', thresholdwithblur)
@@ -119,16 +112,14 @@ for x in range(len(eval_img)):
     imgFG[abs_mask != 255] = [0,0,0] 
     """
 
-
     # mask3 = imgFG - imgBG
-    #gray = cv.cvtColor(cv.cvtColor(mask, cv.COLOR_BGR2RGB), cv.COLOR_BGR2GRAY)
+    # gray = cv.cvtColor(cv.cvtColor(mask, cv.COLOR_BGR2RGB), cv.COLOR_BGR2GRAY)
 
     # cv.imwrite(root_path+'mask/negate_color_000000.jpg', mask3)
 
     # gray = cv.cvtColor(mask, cv.COLOR_BGR2GRAY)
     # cv.imwrite(root_path+'mask/subt_000000.jpg', gray)
     # cv.imwrite(root_path+'mask/mask_000000.jpg', mask)
-
 
     """
     (T, threshold) = cv.threshold(gray,0,255,cv.THRESH_BINARY | cv.THRESH_OTSU)
@@ -163,7 +154,7 @@ for x in range(len(eval_img)):
 
     # mask.save('/home/fatih/fatih_phd/DeepPBM/Codes/Result/BMC2012/Video_002/mask/mask3.jpg')
 
-    #cv.imwrite('/home/fatih/fatih_phd/DeepPBM/Codes/Result/BMC2012/Video_002/mask/mask1.jpg', mask)
+    # cv.imwrite('/home/fatih/fatih_phd/DeepPBM/Codes/Result/BMC2012/Video_002/mask/mask1.jpg', mask)
 
 total = time.time() - start
 print(total)
